@@ -31,11 +31,7 @@ def doc_scan(fol_path):
 
 
 def malscan():
-    #if py_version.group(1) == '2':
-    #    sys.stdout = open(fol_path+'\\result.txt', 'w')
-    #else:
-    #    sys.stdout = open(fol_path+'\\result.txt', 'w', -1, 'utf-8')
-        
+       
     print('''
  ██████╗██╗   ██╗███████╗    ██████╗  ██████╗  ██╗███████╗       ██████╗  ██╗ █████╗  █████╗ 
 ██╔════╝██║   ██║██╔════╝    ╚════██╗██╔═████╗███║╚════██║      ██╔═████╗███║██╔══██╗██╔══██╗
@@ -52,7 +48,6 @@ def malscan():
         if os.path.isdir(result_path) == True:
             xml_scan(result_path)
             xml_url_parser(result_path)
-            #del xmlfile[:]
             del xml_path[:]
             print('------------------------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
@@ -74,20 +69,8 @@ def xml_scan(result_path):
     xml_file = os.listdir(result_path)
     for filename in xml_file:
         xml_path.append(filename)
-        
-    '''    
-    setting_xml = re.search('settings.xml.rels', ''.join(xml_path))
-    docu_xml = re.search('document.xml.rels', ''.join(xml_path))
-    if docu_xml != None:
-        if setting_xml != None:
-            xmlfile.append(setting_xml.group())
-        else:
-            xmlfile.append(docu_xml.group())
-    else:
-        print('not xml.rels file')
-    '''
-    
-    
+
+          
 
 #CVE-2017-0199
 def xml_url_parser(result_path):
@@ -105,17 +88,9 @@ def xml_url_parser(result_path):
                     save.append(url)
                 else:
                     pass
-    #for save_value in save:
-    #    URL.append(save_value)       
+    
 
-
-
+#main
 doc_scan(fol_path)
 malscan()
-#xml_scan(result_path)
-#xml_url_parser(result_path)
 
-
-#sys.stdout = open(fol_path+'\\result.txt', 'w')
-#for out in save:
-#    print(out)
