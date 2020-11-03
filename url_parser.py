@@ -55,18 +55,24 @@ def malscan():
     print('Console Tool and Python 2.x, 3.x DOC Malware Scanner version 1.0')
     for i in doc:
         Unpack_zipfile(i)
-        time.sleep(0.3)
+        #time.sleep(0.3)
         if os.path.isdir(RELS_PATH) == True:
             xml_scan(RELS_PATH)
             xml_url_parser(RELS_PATH)
             del xml_path[:]
             print('------------------------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
-            for out in save:
-                print('[+]URL : %s' % out.encode('utf-8'))
+            if save:
+                for out in save:
+                    print(out)
+                    print('[+]URL : %s' % out.encode('utf-8'))
+                    print('------------------------------------------------------------------------------------------------')
+                    del save[:]
+                    shutil.rmtree(RELS_PATH[:-11])
+            else:
+                print('[+]URL : Not URL')
                 print('------------------------------------------------------------------------------------------------')
-                del save[:]
-                shutil.rmtree(RELS_PATH[:-11])
+                
         else:
             print('------------------------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
