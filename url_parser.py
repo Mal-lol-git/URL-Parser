@@ -1,6 +1,13 @@
 #-*- coding: utf-8 -*-
-import os, re, sys, time, shutil
+import os
+import re
+import sys
+import time
+import shutil
+import pyzipper
 import xml.etree.ElementTree as ET
+
+from settings import *
 
 doc = []
 save = []
@@ -8,16 +15,20 @@ xml_path = []
 xmlfile = []
 URL = []
 
-fol_path = sys.argv[1]
-
-scanner_path = os.path.dirname(os.path.realpath(__file__))
-
-a = os.getenv("appdata")[:-8]
-
-result_path= a+'\Local\Temp\DecompressedMsOfficeDocument\word\_rels'
+FOL_PATH = sys.argv[1]
 
 py_version = re.search("major=(.*), minor",str(sys.version_info))
 
+def Unpack_zipfile(filename):
+    try:
+        #Unpack_zipfile
+        #Create folder(zipfilename) 
+        file_path = os.path.join(FOL_PATH, filename)
+        with pyzipper.AESZipFile(file_path) as zf:
+            my_secrets = zf.extractall(UNZIP_PATH)             
+            print("Sample downloaded and unpacked.")
+    except Exception as e:   
+        print("Not find %s" % filename)
 
 def doc_scan(fol_path):
     doc_file = os.listdir(fol_path)
@@ -43,11 +54,11 @@ def malscan():
 ''')
     print('Console Tool and Python 2.x, 3.x DOC Malware Scanner version 1.0')
     for i in doc:
-        os.popen('cd /d %s & OfficeMalScanner.exe %s\\%s inflate' % (scanner_path, fol_path, i) )
+        Unpack_zipfile(i)
         time.sleep(0.3)
-        if os.path.isdir(result_path) == True:
-            xml_scan(result_path)
-            xml_url_parser(result_path)
+        if os.path.isdir(RELS_PATH) == True:
+            xml_scan(RELS_PATH)
+            xml_url_parser(RELS_PATH)
             del xml_path[:]
             print('------------------------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
@@ -55,7 +66,7 @@ def malscan():
                 print('[+]URL : %s' % out.encode('utf-8'))
                 print('------------------------------------------------------------------------------------------------')
                 del save[:]
-                shutil.rmtree(result_path[:-11])
+                shutil.rmtree(RELS_PATH[:-11])
         else:
             print('------------------------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
@@ -65,17 +76,17 @@ def malscan():
         
       
 
-def xml_scan(result_path):
-    xml_file = os.listdir(result_path)
+def xml_scan(rels_path):
+    xml_file = os.listdir(rels_path)
     for filename in xml_file:
         xml_path.append(filename)
 
           
 
 #CVE-2017-0199
-def xml_url_parser(result_path):
+def xml_url_parser(rels_path):
     for xmlfile in xml_path:
-        xml = ET.parse(result_path+'\\'+xmlfile)
+        xml = ET.parse(rels_path+'\\'+xmlfile)
         root = xml.getroot()
 
         for Data in root:
@@ -91,6 +102,6 @@ def xml_url_parser(result_path):
     
 
 #main
-doc_scan(fol_path)
+doc_scan(FOL_PATH)
 malscan()
 
