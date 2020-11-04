@@ -22,13 +22,11 @@ py_version = re.search("major=(.*), minor",str(sys.version_info))
 def Unpack_zipfile(filename):
     try:
         #Unpack_zipfile
-        #Create folder(zipfilename) 
         file_path = os.path.join(FOL_PATH, filename)
         with pyzipper.AESZipFile(file_path) as zf:
             my_secrets = zf.extractall(UNZIP_PATH)             
-            print("Sample downloaded and unpacked.")
     except Exception as e:   
-        print("Not find %s" % filename)
+        pass
 
 def doc_scan(fol_path):
     doc_file = os.listdir(fol_path)
@@ -56,28 +54,27 @@ def malscan():
     for i in doc:
         Unpack_zipfile(i)
         #time.sleep(0.3)
-        if os.path.isdir(RELS_PATH) == True:
+        if os.path.isdir(RELS_PATH):
             xml_scan(RELS_PATH)
             xml_url_parser(RELS_PATH)
             del xml_path[:]
-            print('------------------------------------------------------------------------------------------------')
+            print('-------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
             if save:
                 for out in save:
-                    print(out)
                     print('[+]URL : %s' % out.encode('utf-8'))
-                    print('------------------------------------------------------------------------------------------------')
+                    print('-------------------------------------------------------------------------------')
                     del save[:]
                     shutil.rmtree(RELS_PATH[:-11])
-            else:
-                print('[+]URL : Not URL')
-                print('------------------------------------------------------------------------------------------------')
-                
+            if os.path.isdir(UNZIP_PATH):
+                print('[+]STATUS : Encrypt File')
+                print('-------------------------------------------------------------------------------')
+                shutil.rmtree(RELS_PATH[:-11])
         else:
-            print('------------------------------------------------------------------------------------------------')
+            print('-------------------------------------------------------------------------------')
             print('[+]MD5 : %s' % i)
             print('[+]URL : Not URL')
-            print('------------------------------------------------------------------------------------------------')
+            print('-------------------------------------------------------------------------------')
             pass
         
       
